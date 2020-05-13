@@ -2,6 +2,7 @@ package ro.fasttrackit.curs23simpleexercisekotlin.bootstrap
 
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
+import ro.fasttrackit.curs23simpleexercisekotlin.domain.MainMenu
 import ro.fasttrackit.curs23simpleexercisekotlin.domain.Vacation
 import ro.fasttrackit.curs23simpleexercisekotlin.service.VacationService
 
@@ -11,68 +12,21 @@ class DataLoader(private val vacationService: VacationService) : CommandLineRunn
     override fun run(vararg args: String?) {
         val count = vacationService.vacationRepository.count()
         if (count == 0L) loadData()
+        val menu = MainMenu(vacationService)
+        menu.run()
     }
 
     private fun loadData() {
-        Vacation.Builder()
-                .location("Dubai")
-                .price(3100)
-                .duration(10)
-                .build()?.let { vacationService.addVacation(it) }
-
-        Vacation.Builder()
-                .location("Paris")
-                .price(5400)
-                .duration(14)
-                .build()?.let { vacationService.addVacation(it) }
-
-        Vacation.Builder()
-                .location("London")
-                .price(2300)
-                .duration(4)
-                .build()?.let { vacationService.addVacation(it) }
-
-        Vacation.Builder()
-                .location("New York")
-                .price(7900)
-                .duration(6)
-                .build()?.let { vacationService.addVacation(it) }
-
-        Vacation.Builder()
-                .location("Paris")
-                .price(3000)
-                .duration(5)
-                .build()?.let { vacationService.addVacation(it) }
-
-        Vacation.Builder()
-                .location("Dubai")
-                .price(1800)
-                .duration(5)
-                .build()?.let { vacationService.addVacation(it) }
-
-        Vacation.Builder()
-                .location("Tokyo")
-                .price(6800)
-                .duration(8)
-                .build()?.let { vacationService.addVacation(it) }
-
-        Vacation.Builder()
-                .location("Istanbul")
-                .price(2000)
-                .duration(7)
-                .build()?.let { vacationService.addVacation(it) }
-
-        Vacation.Builder()
-                .location("London")
-                .price(2400)
-                .duration(5)
-                .build()?.let { vacationService.addVacation(it) }
-
-        Vacation.Builder()
-                .location("Paris")
-                .price(3900)
-                .duration(8)
-                .build()?.let { vacationService.addVacation(it) }
+        vacationService.addVacation(Vacation("Dubai", 3100, 10))
+        vacationService.addVacation(Vacation("Paris", 5400, 14))
+        vacationService.addVacation(Vacation("London", 2300, 4))
+        vacationService.addVacation(Vacation("Moscow", 7900, 6))
+        vacationService.addVacation(Vacation("Paris", 3000, 5))
+        vacationService.addVacation(Vacation("Dubai", 1800, 5))
+        vacationService.addVacation(Vacation("Tokyo", 6800, 8))
+        vacationService.addVacation(Vacation("Istanbul", 2000, 7))
+        vacationService.addVacation(Vacation("London", 2400, 5))
+        vacationService.addVacation(Vacation("Paris", 3900, 8))
 
         println("Loaded vacations ...")
     }
