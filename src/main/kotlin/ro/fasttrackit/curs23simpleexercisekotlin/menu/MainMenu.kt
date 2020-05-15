@@ -1,6 +1,8 @@
-package ro.fasttrackit.curs23simpleexercisekotlin.domain
+package ro.fasttrackit.curs23simpleexercisekotlin.menu
 
 import de.vandermeer.asciitable.AsciiTable
+import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment
+import org.apache.commons.lang3.StringUtils
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.exchange
 import org.springframework.web.util.UriComponentsBuilder
+import ro.fasttrackit.curs23simpleexercisekotlin.domain.Vacation
 import ro.fasttrackit.curs23simpleexercisekotlin.exceptions.ResourceNotFoundException
 import ro.fasttrackit.curs23simpleexercisekotlin.service.VacationService
 import java.util.*
@@ -44,7 +47,7 @@ class MainMenu(val vacationService: VacationService) {
 
     private fun getInput(): Int {
         print("Select your option: ")
-        return scanner.nextInt()
+        return numeric(scanner.next())
     }
 
     private fun executeInput(input: Int) {
@@ -78,7 +81,7 @@ class MainMenu(val vacationService: VacationService) {
 
     private fun handleVacationsUnderAmount() {
         print("Enter maximum price: ")
-        val maxPrice = scanner.nextInt()
+        val maxPrice = numeric(scanner.next())
 
         val requestBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/vacations")
                 .queryParam("maxPrice", maxPrice)
@@ -94,7 +97,7 @@ class MainMenu(val vacationService: VacationService) {
 
     private fun handleDeleteVacation() {
         print("Enter ID of vacation to be deleted: ")
-        val id = scanner.nextInt()
+        val id = numeric(scanner.next())
         scanner.nextLine()
         try {
             val vacationToDelete = vacationService.getVacationById(id)
@@ -106,7 +109,7 @@ class MainMenu(val vacationService: VacationService) {
 
     private fun handleUpdateVacation() {
         print("Enter ID of vacation to be updated: ")
-        val id = scanner.nextInt()
+        val id = numeric(scanner.next())
         scanner.nextLine()
         try {
             val vacationToUpdate = vacationService.getVacationById(id)
@@ -124,7 +127,9 @@ class MainMenu(val vacationService: VacationService) {
 
     private fun printOptionResult(requestBuilder: UriComponentsBuilder) {
         val vacations = getListOfVacations(requestBuilder)
-        renderAsciiTable(vacations)
+        if (vacations != null) {
+            if (vacations.isNotEmpty()) renderAsciiTable(vacations) else renderEmptyAsciiTable()
+        }
     }
 
     private fun getListOfVacations(builder: UriComponentsBuilder): List<Vacation>? {
@@ -140,9 +145,9 @@ class MainMenu(val vacationService: VacationService) {
         print("Enter location: ")
         val location = scanner.next()
         print("Enter price: ")
-        val price = scanner.nextInt()
+        val price = numeric(scanner.next())
         print("Enter duration: ")
-        val duration = scanner.nextInt()
+        val duration = numeric(scanner.next())
         return Vacation(location, price, duration)
     }
 
@@ -154,5 +159,26 @@ class MainMenu(val vacationService: VacationService) {
         vacations?.forEach { asciiTable.addRow(it.id, it.location, it.price, it.duration) }
         asciiTable.addRule()
         println(asciiTable.render())
+    }
+
+    private fun renderEmptyAsciiTable() {
+        val asciiTable = AsciiTable()
+        asciiTable.addRule()
+        asciiTable.addRow("NO ELEMENTS FOUND FOR YOUR SEARCH").setTextAlignment(TextAlignment.CENTER)
+        asciiTable.addRule()
+        println(asciiTable.render())
+    }
+
+    private fun numeric(input: String): Int {
+        var newInput = ""
+        if (StringUtils.isNumeric(input)) {
+            return input.toInt()
+        } else {
+            while (!StringUtils.isNumeric(newInput)) {
+                print("Incorrect input. Please enter correct value: ")
+                newInput = scanner.next()
+            }
+        }
+        return newInput.toInt()
     }
 }

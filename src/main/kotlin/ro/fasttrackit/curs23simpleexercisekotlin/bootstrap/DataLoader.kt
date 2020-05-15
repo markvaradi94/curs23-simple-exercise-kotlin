@@ -2,7 +2,7 @@ package ro.fasttrackit.curs23simpleexercisekotlin.bootstrap
 
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
-import ro.fasttrackit.curs23simpleexercisekotlin.domain.MainMenu
+import ro.fasttrackit.curs23simpleexercisekotlin.menu.MainMenu
 import ro.fasttrackit.curs23simpleexercisekotlin.domain.Vacation
 import ro.fasttrackit.curs23simpleexercisekotlin.service.VacationService
 

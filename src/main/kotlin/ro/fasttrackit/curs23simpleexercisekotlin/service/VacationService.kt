@@ -9,7 +9,7 @@ import ro.fasttrackit.curs23simpleexercisekotlin.repository.VacationRepository
 class VacationService(val vacationRepository: VacationRepository) {
 
     fun getAllVacations(location: String?, maxPrice: Int?): List<Vacation> {
-        return if (location != null && maxPrice == null) {
+        return if (location == null && maxPrice == null) {
             vacationRepository.findVacationsByLocationIgnoreCase(location).toList()
         } else if (location == null && maxPrice != null) {
             vacationRepository.findVacationsByPriceLessThanEqual(maxPrice).toList()
@@ -22,8 +22,10 @@ class VacationService(val vacationRepository: VacationRepository) {
 
     fun replaceVacation(id: Int, vacation: Vacation): Vacation {
         val vacationToReplace = getOrThrow(id)
-        vacationRepository.delete(vacationToReplace)
-        return vacationRepository.save(vacation)
+        vacationToReplace.location = vacation.location
+        vacationToReplace.price = vacation.price
+        vacationToReplace.duration = vacation.duration
+        return vacationRepository.save(vacationToReplace)
     }
 
     fun deleteVacation(id: Int): Vacation {

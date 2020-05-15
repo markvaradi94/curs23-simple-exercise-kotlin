@@ -6,9 +6,9 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-data class Vacation(@Column(name = "location") val location: String,
-                    @Column(name = "price") val price: Int,
-                    @Column(name = "duration") val duration: Int) {
+data class Vacation(@Column(name = "location") var location: String,
+                    @Column(name = "price") var price: Int,
+                    @Column(name = "duration") var duration: Int) {
     @Id
     @GeneratedValue
     val id: Int = 0
